@@ -27,7 +27,7 @@ export const createUser = async (userData) => {
   }
 
   // Check status Length
-  if (status && status.length < 64) {
+  if (status && status.length > 64) {
     throw createHttpError.BadRequest(
       "Please make sure your status is less than 64 characters."
     );
