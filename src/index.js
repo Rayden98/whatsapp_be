@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import { Server } from "socket.io";
 import app from "./app.js";
 import logger from "./configs/logger.config.js";
+import SocketServer from "./SocketServer.js";
 
 // env variables
 const { DATABASE_URL } = process.env;
@@ -13,7 +15,7 @@ mongoose.connection.on("error", (err) => {
 });
 
 // mongodb debug mode
-if (process.env.NODE_ENV !== "producction") {
+if (process.env.NODE_ENV !== "production") {
   mongoose.set("debug", true);
 }
 
@@ -30,6 +32,19 @@ let server;
 server = app.listen(PORT, () => {
   logger.info(`server is listening at ${PORT}`);
   // throw new Error("error in server.");
+});
+
+// socket io
+const io = new Server(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: process.env.CLIENT_ENDPOINT,
+  },
+});
+
+io.on("connection", (socket) => {
+  logger.info("socket io connected successfully.");
+  SocketServer(socket, io);
 });
 
 // handle server errors

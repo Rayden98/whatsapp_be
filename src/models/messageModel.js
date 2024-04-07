@@ -12,7 +12,7 @@ const messageSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
-    conversations: {
+    conversation: {
       type: ObjectId,
       ref: "ConversationModel",
     },
@@ -24,4 +24,7 @@ const messageSchema = mongoose.Schema(
   }
 );
 
-const MessageModel = mongoose.model.MessageModel;
+const MessageModel =
+  mongoose.models.MessageModel || mongoose.model("MessageModel", messageSchema);
+
+export default MessageModel;
